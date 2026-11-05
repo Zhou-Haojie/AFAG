@@ -35,10 +35,10 @@ NO_PARAMS = {"Baseline", "VarianceScore", "MCFS"}
 SOURCE = {
     "AFAG":  ("tuning_afag_wide", None),
     "UDLA":  ("tuning_udla_wide", None),
-    "JELSR": ("tuning_paper", "JELSR"),
-    "NDFS":  ("tuning_paper", "NDFS"),
-    "SOGFS": ("tuning_paper", "SOGFS"),
-    "CNAFS": ("tuning_paper", "CNAFS"),
+    "JELSR": ("tuning_comparison_methods", "JELSR"),
+    "NDFS":  ("tuning_comparison_methods", "NDFS"),
+    "SOGFS": ("tuning_comparison_methods", "SOGFS"),
+    "CNAFS": ("tuning_comparison_methods", "CNAFS"),
 }
 SEARCH_GRID = {
     "AFAG":  "1e-5 .. 1e5 (with UDLA, identical procedure)",
@@ -299,7 +299,7 @@ def main():
             print(f"  {ds}")
             for m in ("AFAG", "UDLA", "JELSR", "NDFS", "SOGFS", "CNAFS"):
                 print(f"    {m:<6} {params[m]}")
-        print("\n  usage: python Runing_final.py [dataset | --all]\n")
+        print("\n  usage: python Running.py [dataset | --all]\n")
         return
 
     todo = DATASETS if args[0] == "--all" else args
