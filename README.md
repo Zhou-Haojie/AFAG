@@ -1,11 +1,26 @@
-
 # AFAG: Adaptive Feature Selection with Adaptive Graph Learning
 
-This repository contains the code for the manuscript **“Advanced Feature Selection with Adaptive Graph Learning in Unsupervised Setting”** (Manuscript ID: Math-30001). It implements AFAG and the comparison methods and provides scripts for parameter tuning, evaluation, ablation, sensitivity analysis, and convergence diagnostics.
+This repository contains the code and tuned parameter files for the manuscript **“Advanced Feature Selection with Adaptive Graph Learning in Unsupervised Setting”** (Manuscript ID: Math-30001).
 
-## Methods
+The experiments compare AFAG with eight baseline and comparison methods on six benchmark datasets. The repository also includes scripts for parameter tuning, ablation analysis, and convergence diagnostics.
 
-The experiments compare AFAG with Baseline, VarianceScore, MCFS, JELSR, NDFS, SOGFS, CNAFS, and UDLA. The adaptive-graph implementations and shared graph utilities are in `algorithms_adaptive.py`; the remaining methods and evaluation metrics are in `algorithms.py`.
+## Repository Contents
+
+| File or directory | Description |
+|---|---|
+| `Running.py` | Runs the main comparison experiments and saves results and plots. |
+| `algorithms.py` | Implements conventional feature selection methods and clustering evaluation. |
+| `algorithms_adaptive.py` | Implements AFAG, UDLA, CNAFS, SOGFS, and shared adaptive-graph utilities. |
+| `data_loader.py` | Loads and prepares the benchmark datasets. |
+| `tune_afag_wide.py` | Searches AFAG parameter settings. |
+| `tune_udla_wide.py` | Searches UDLA parameter settings. |
+| `tune_comparison_methods.py` | Searches parameter settings for the comparison methods. |
+| `ablation.py` | Runs the ablation analysis. |
+| `convergence_and_ki.py` | Produces convergence and `k_i` diagnostic analyses. |
+| `tuning_afag_wide/` | Stores AFAG parameter files and tuning logs, organized by dataset. |
+| `tuning_udla_wide/` | Stores UDLA parameter files and tuning logs, organized by dataset. |
+| `tuning_comparison_methods/` | Stores comparison-method parameter files and tuning logs, organized by dataset. |
+| `dataset/` | Local directory for the benchmark data files; the data files are not included in this repository. |
 
 ## Requirements
 
@@ -21,37 +36,13 @@ Install the dependencies with:
 python -m pip install numpy scipy scikit-learn matplotlib
 ```
 
-For exact reproduction, record and use the package versions from the environment used to generate the reported results.
-
-## Repository layout
-
-```text
-.
-├── README.md
-├── algorithms.py
-├── algorithms_adaptive.py
-├── data_loader.py
-├── Running.py
-├── tune_afag_wide.py
-├── tune_udla_wide.py
-├── tune_comparison_methods.py
-├── ablation.py
-├── convergence_and_ki.py
-├── dataset/
-├── tuning_afag_wide/
-├── tuning_udla_wide/
-└── tuning_paper/
-```
-
-The runner is named `Running.py`; the tuning and analysis scripts import this exact module name.
-
-The tuning directories should contain the per-dataset `best_params.json` files used for the reported results. Keep the corresponding search logs if you want readers to inspect the tested configurations.
+For exact reproduction, use the package versions from the environment used to generate the reported results.
 
 ## Datasets
 
-Download the MATLAB files into `dataset/`. The URLs below are the sources supplied for this project; `data_loader.py` recognizes these filenames and common variable-name variants.
+The datasets are not included in this repository. Download the MATLAB files from the links below and place them in a local `dataset/` directory at the repository root.
 
-| Dataset | Samples | Features | Classes | File |
+| Dataset | Samples | Features | Classes | Download |
 |---|---:|---:|---:|---|
 | warpAR10P | 130 | 2,400 | 10 | [warpAR10P.mat](https://jundongl.github.io/scikit-feature/files/datasets/warpAR10P.mat) |
 | ORL | 400 | 1,024 | 40 | [ORL.mat](https://jundongl.github.io/scikit-feature/files/datasets/ORL.mat) |
@@ -60,9 +51,7 @@ Download the MATLAB files into `dataset/`. The URLs below are the sources suppli
 | TOX-171 | 171 | 5,748 | 4 | [TOX_171.mat](https://jundongl.github.io/scikit-feature/files/datasets/TOX_171.mat) |
 | GLIOMA | 50 | 4,434 | 4 | [GLIOMA.mat](https://jundongl.github.io/scikit-feature/files/datasets/GLIOMA.mat) |
 
-The loader expects each file to contain a feature matrix and class-label vector. It converts labels to consecutive zero-based integers and orients the matrix as samples by features. Check the terms attached to each source before redistributing the dataset files; when redistribution is not permitted, provide the source links and download instructions instead of committing the data.
-
-Expected layout:
+Expected local dataset layout:
 
 ```text
 dataset/
@@ -74,58 +63,53 @@ dataset/
 └── GLIOMA.mat
 ```
 
-## Reproducing the experiments
+Please follow the dataset providers’ terms when downloading and using the data. Do not redistribute data files unless their terms permit it.
 
-Run commands from the repository root. Tuning is computationally expensive, especially for `CLL-SUB-111`.
+## Tuned Parameter Files
 
-1. Tune AFAG and UDLA on their shared wide grid:
+The main experiment loads the saved parameter files from these paths:
 
-   ```bash
-   python tune_afag_wide.py --all
-   python tune_udla_wide.py --all
-   ```
+```text
+tuning_afag_wide/<dataset>/best_params.json
+tuning_udla_wide/<dataset>/best_params.json
+tuning_comparison_methods/<dataset>/best_params.json
+```
 
-2. Tune the other parameterized comparison methods on their configured grids:
+Each tuning directory should contain a subdirectory for each of the six datasets. The comparison-method JSON files contain entries for JELSR, NDFS, SOGFS, and CNAFS. Keep the directory names, dataset names, and JSON structure unchanged because `Running.py` uses them to load the parameters. The tuning scripts can be used to search for parameters again; the saved JSON files allow the main experiment to use the recorded settings directly.
 
-   ```bash
-   python tune_comparison_methods.py --all
-   ```
+## Running the Main Experiments
 
-3. Run the final comparison across all datasets:
+Run commands from the repository root after installing the requirements, downloading the datasets, and placing them in `dataset/`.
 
-   ```bash
-   python Running.py --all
-   ```
+Run a single dataset:
 
-4. Generate the ablation and sensitivity analyses:
+```bash
+python Running.py warpAR10P
+```
 
-   ```bash
-   python ablation.py all
-   ```
+Run all six datasets:
 
-5. Generate convergence and adaptive-neighbour summaries:
+```bash
+python Running.py --all
+```
 
-   ```bash
-   python convergence_and_ki.py
-   ```
+The main runner uses the random seed and preprocessing settings specified in `Running.py`. It writes per-dataset results, configuration files, and plots to the `results/` directory. Running the script without a dataset argument displays the parameter settings and usage information.
 
-Use `--list` with the runner or tuning scripts to inspect available datasets, parameter ranges, or selected settings. Individual dataset runs can be started by passing a dataset name, for example `python Running.py GLIOMA`.
+## Additional Analysis Scripts
 
-## Outputs
+- `tune_afag_wide.py`, `tune_udla_wide.py`, and `tune_comparison_methods.py` perform parameter searches for their respective methods.
+- `ablation.py` runs the ablation analysis.
+- `convergence_and_ki.py` generates convergence and `k_i` diagnostics.
 
-The scripts write results and intermediate artifacts into directories such as `results/`, `results_ablation/`, `results_sensitivity/`, `results_convergence/`, `figures/`, and `tables/`. The main runner saves per-run clustering scores and a `run_config.json` containing the parameters and run settings. Preserve these outputs for the reported results.
+These analyses may require substantial computation. Refer to the options and configuration in each script before running it.
 
-The files listed in this repository cover the main experiments, tuning, ablation/sensitivity analysis, and convergence/neighbour-count analysis. If the final manuscript includes statistical-test tables or figures generated by separate scripts, include those scripts and their outputs as well so every reported result can be regenerated.
+## Reproducibility Notes
 
-## Reproducibility notes
+- The main experiment configuration uses random seed 52 and 20 clustering evaluation runs.
+- The methods, preprocessing settings, feature-count grid, and saved parameter provenance are defined or recorded by the scripts.
+- To reproduce reported results, use the same dataset files, parameter JSON files, and package versions as the original experiment environment.
+- Tuning logs, when present, are provided as records of the parameter search; `Running.py` loads `best_params.json` to configure the main comparison.
 
-- The random seed is set to 52 in the experiment configuration.
-- K-means uses k-means++ initialization and ten restarts per run; the main evaluation uses 20 runs.
-- Hyperparameters are selected using the class labels. The manuscript should state this model-selection protocol.
-- AFAG and UDLA use the same wide parameter grid and tuning procedure for their controlled comparison. The other methods use the ranges configured in `tune_comparison_methods.py`.
-- Keep the scripts, parameter JSON files, search logs, and final `run_config.json` files consistent with the exact results reported in the manuscript.
+## License and Attribution
 
-## Attribution
-
-Please cite the AFAG manuscript and the original papers for the comparison methods. `algorithms_adaptive.py` identifies the source implementations and publications for CNAFS, SOGFS, and MGAGR. Preserve those attributions when reusing or modifying the code.
-
+See the [`LICENSE`](LICENSE) file for the license applying to this repository. Please also cite the AFAG manuscript and the original publications for the comparison methods. Preserve any source-code attribution and license notices included with third-party implementations.
