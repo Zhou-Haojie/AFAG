@@ -1,0 +1,247 @@
+{
+ "MCFS": {
+  "params": {
+   "beta": 0.01
+  },
+  "score": 0.33907692307692305,
+  "criterion": "mean_acc",
+  "n_fits": 7,
+  "seconds": 59.856688261032104,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0
+  },
+  "source": "NDFS grid (original MCFS specifies no range)",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ },
+ "SOGFS": {
+  "params": {
+   "gamma": 1000.0
+  },
+  "score": 0.47569230769230775,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 211.5012607574463,
+  "fixed": {
+   "k": 5,
+   "max_iter": 20,
+   "inner_iter": 1,
+   "max_dim": 20000
+  },
+  "source": "Nie, Zhu & Li, AAAI 2016 / TKDE 2021",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "gamma": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ]
+   }
+  }
+ },
+ "CNAFS": {
+  "params": {
+   "alpha": 1000.0,
+   "beta": 0.01,
+   "lam": 1000.0,
+   "gamma": 0.1,
+   "epsilon": 100.0
+  },
+  "score": 0.4024615384615385,
+  "criterion": "mean_acc",
+  "n_fits": 61,
+  "seconds": 1353.9055206775665,
+  "fixed": {
+   "max_iter": 30,
+   "max_dim": 20000
+  },
+  "source": "Yuan et al., IEEE T-Cybernetics 2022",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "beta": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "lam": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "gamma": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "epsilon": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ]
+   }
+  }
+ },
+ "JELSR": {
+  "params": {
+   "alpha": 0.01,
+   "beta": 0.01
+  },
+  "score": 0.3495384615384616,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 729.6046588420868,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0,
+   "max_iter": 80
+  },
+  "source": "NDFS grid (original JELSR specifies no range)",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ],
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ },
+ "NDFS": {
+  "params": {
+   "alpha": 1.0,
+   "beta": 0.01
+  },
+  "score": 0.29507692307692307,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 707.6634850502014,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0,
+   "max_iter": 80,
+   "lam": 100000000.0
+  },
+  "source": "Li et al., AAAI 2012",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ],
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ }
+}

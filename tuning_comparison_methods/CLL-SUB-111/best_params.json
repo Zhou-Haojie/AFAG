@@ -1,0 +1,247 @@
+{
+ "MCFS": {
+  "params": {
+   "beta": 1e-06
+  },
+  "score": 0.5772972972972973,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 70.94146990776062,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0
+  },
+  "source": "NDFS grid (original MCFS specifies no range)",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ },
+ "JELSR": {
+  "params": {
+   "alpha": 0.01,
+   "beta": 0.01
+  },
+  "score": 0.5733333333333333,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 5479.332355976105,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0,
+   "max_iter": 80
+  },
+  "source": "NDFS grid (original JELSR specifies no range)",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ],
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ },
+ "CNAFS": {
+  "params": {
+   "alpha": 0.001,
+   "beta": 1.0,
+   "lam": 100.0,
+   "gamma": 10.0,
+   "epsilon": 0.001
+  },
+  "score": 0.5697297297297297,
+  "criterion": "mean_acc",
+  "n_fits": 61,
+  "seconds": 11304.649791955948,
+  "fixed": {
+   "max_iter": 30,
+   "max_dim": 20000
+  },
+  "source": "Yuan et al., IEEE T-Cybernetics 2022",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "beta": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "lam": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "gamma": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ],
+    "epsilon": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ]
+   }
+  }
+ },
+ "NDFS": {
+  "params": {
+   "alpha": 0.01,
+   "beta": 1.0
+  },
+  "score": 0.550990990990991,
+  "criterion": "mean_acc",
+  "n_fits": 13,
+  "seconds": 7426.2568690776825,
+  "fixed": {
+   "k": 5,
+   "sigma": 10000.0,
+   "max_iter": 80,
+   "lam": 100000000.0
+  },
+  "source": "Li et al., AAAI 2012",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "alpha": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ],
+    "beta": [
+     1e-06,
+     0.0001,
+     0.01,
+     1.0,
+     100.0,
+     10000.0,
+     1000000.0
+    ]
+   }
+  }
+ },
+ "SOGFS": {
+  "params": {
+   "gamma": 10.0
+  },
+  "score": 0.5686486486486486,
+  "criterion": "mean_acc",
+  "n_fits": 7,
+  "seconds": 11326.160792827606,
+  "fixed": {
+   "k": 5,
+   "max_iter": 20,
+   "inner_iter": 1,
+   "max_dim": 20000
+  },
+  "source": "Nie, Zhu & Li, AAAI 2016 / TKDE 2021",
+  "protocol": {
+   "rounds": 2,
+   "tune_n_runs": 5,
+   "tune_l": [
+    40,
+    80,
+    120,
+    160,
+    200
+   ],
+   "grid": {
+    "gamma": [
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0
+    ]
+   }
+  }
+ }
+}
