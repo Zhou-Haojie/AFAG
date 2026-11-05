@@ -5,10 +5,6 @@ With --force, the search starts from the (start) row in the saved log and
 writes new tuning records to tuning_afag_rerun. Evaluation outputs are saved
 to results_afag_rerun. The first-stage search is not reconstructed here.
 
-Usage:
-    python tune_afag_wide.py --list
-    python tune_afag_wide.py --all
-    python tune_afag_wide.py GLIOMA
 """
 from __future__ import annotations
 import os, sys, csv, json, time, argparse, importlib
