@@ -38,7 +38,7 @@ PREPROCESS_MODE, DATASETS = _runner.PREPROCESS_MODE, _runner.DATASETS
 preprocess, SEED, DATA_ROOT = _runner.preprocess, _runner.SEED, _runner.DATA_ROOT
 
 HERE     = os.path.dirname(os.path.abspath(__file__))
-TUNE_DIR = os.path.join(HERE, "tuning_paper")
+TUNE_DIR = os.path.join(HERE, "tuning_comparison_methods")
 
 ROUNDS              = 2
 TUNE_N_RUNS         = 5
