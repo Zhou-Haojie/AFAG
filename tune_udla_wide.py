@@ -10,9 +10,9 @@ from algorithms_adaptive import UDLA
 from data_loader import LOADERS
 
 try:
-    _runner = importlib.import_module("Runing_final")
+    _runner = importlib.import_module("Running")
 except ImportError:
-    sys.exit("[ERROR] Runing_final.py not found in this folder.")
+    sys.exit("[ERROR] Running.py not found in this folder.")
 
 FIXED, PREPROCESS_MODE = _runner.FIXED, _runner.PREPROCESS_MODE
 DATASETS, preprocess, SEED = _runner.DATASETS, _runner.preprocess, _runner.SEED
