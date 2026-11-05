@@ -1,5 +1,14 @@
-"""
-Tune UDLA on the wide grid and evaluate the selected parameters.
+"""Evaluate the saved UDLA parameters or repeat the recorded wide-grid search.
+
+Saved parameters and original search logs are read from tuning_udla_wide.
+With --force, the wide-grid search starts from the (start) row in the saved
+log and writes new tuning records to tuning_udla_rerun. Evaluation outputs
+are saved to results_udla_rerun. The first-stage search is not reconstructed.
+
+Usage:
+    python tune_udla_wide.py --list
+    python tune_udla_wide.py --all
+    python tune_udla_wide.py GLIOMA
 """
 from __future__ import annotations
 import os, sys, csv, json, time, argparse, importlib
@@ -21,7 +30,8 @@ N_RUNS = _runner.N_RUNS
 
 HERE     = os.path.dirname(os.path.abspath(__file__))
 TUNE_DIR = os.path.join(HERE, "tuning_udla_wide")
-RES_DIR  = os.path.join(HERE, "results_udla_wide")
+RERUN_TUNE_DIR = os.path.join(HERE, "tuning_udla_rerun")
+RES_DIR  = os.path.join(HERE, "results_udla_rerun")
 
 ROUNDS              = 2
 TUNE_N_RUNS         = 5
@@ -109,29 +119,18 @@ def evaluate(ds, X, y, c, params):
            rows[inm]["nmi_mean"] * 100, rows[inm]["l"]
 
 
-def symmetric_best(ds):
-    p = os.path.join(HERE, "results", ds, "summary.csv")
-    if not os.path.isfile(p):
-        return None
-    for r in csv.DictReader(open(p, encoding="utf-8-sig")):
-        if r["Method"] == "UDLA":
-            return float(r["Best_ACC%"]), float(r["Best_NMI%"])
-    return None
-
-
-def symmetric_params(ds):
-    path = os.path.join(HERE, "results", ds, "run_config.json")
-    if os.path.isfile(path):
-        config = json.load(open(path, encoding="utf-8"))
-        params = config.get("params", {}).get("UDLA")
-        if params:
-            return params
-    path = os.path.join(TUNE_DIR, ds, "best_params.json")
-    if os.path.isfile(path):
-        record = json.load(open(path, encoding="utf-8"))
-        if record.get("params"):
-            return record["params"]
-    return {}
+def recorded_start(ds):
+    path = os.path.join(TUNE_DIR, ds, "search_log.csv")
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"Recorded search log not found: {path}")
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        for row in csv.DictReader(f):
+            if row.get("param") == "(start)" and row.get("round") == "0":
+                try:
+                    return {key: float(row[key]) for key in SPACE}
+                except (KeyError, TypeError, ValueError) as exc:
+                    raise ValueError(f"Invalid starting parameters in {path}") from exc
+    raise ValueError(f"No (start) row found in {path}")
 
 
 def main():
@@ -143,15 +142,16 @@ def main():
     a = ap.parse_args()
 
     if a.list or (not a.datasets and not a.all):
-        print(f"\n  UDLA extended-grid search (matches AFAG)")
+        print(f"\n  UDLA wide-grid search and evaluation")
         print(f"  grid for alpha, beta, gamma, lam: {WIDE}")
-        print(f"  {N_FITS} fits per dataset")
+        print(f"  up to {N_FITS} candidate fits per dataset")
         tot = sum(ETA_MIN.values())
         for ds in sorted(DATASETS, key=lambda d: ETA_MIN[d]):
             print(f"    {ds:14s} ~{ETA_MIN[ds]:5.0f} min")
         print(f"    {'total':14s} ~{tot/60:5.1f} h  (+ full evaluation, a few min"
               f" per dataset)\n")
-        print("  usage: python tune_udla_wide.py --all\n")
+        print("  usage: python tune_udla_wide.py --all")
+        print("  add --force to repeat the wide-grid search using the recorded start\n")
         return
 
     todo = DATASETS if a.all else a.datasets
@@ -159,9 +159,6 @@ def main():
     if bad:
         sys.exit(f"[ERROR] unknown dataset: {bad}")
     todo = sorted(todo, key=lambda d: ETA_MIN[d])
-
-    print(f"\n  UDLA on the same grid and procedure as AFAG ({N_FITS} fits/dataset),")
-    print(f"  so the AFAG-vs-UDLA comparison is controlled.\n")
 
     summary, t0 = [], time.time()
     for ds in todo:
@@ -174,11 +171,12 @@ def main():
             rec = json.load(open(bp_path, encoding="utf-8"))
             params = rec["params"]
             print(f"  already tuned, reusing: {params}")
-        else:
+        elif a.force:
             t1, log = time.time(), []
             params, best, start, used = tune(ds, X, y, c, log,
-                                             symmetric_params(ds))
-            os.makedirs(os.path.dirname(bp_path), exist_ok=True)
+                                             recorded_start(ds))
+            rerun_dir = os.path.join(RERUN_TUNE_DIR, ds)
+            os.makedirs(rerun_dir, exist_ok=True)
             rec = {"params": params, "score": best, "start_score": start,
                    "criterion": "mean_acc", "n_fits": used,
                    "seconds": time.time() - t1,
@@ -186,36 +184,32 @@ def main():
                                 "tune_l": TUNE_FEATURE_COUNTS,
                                 "grid": {k: list(map(float, v))
                                          for k, v in SPACE.items()},
-                                "comparison": "same grid and procedure as AFAG"}}
-            json.dump(rec, open(bp_path, "w", encoding="utf-8"), indent=1)
+                                "note": "UDLA wide-grid rerun from recorded start"}}
+            with open(os.path.join(rerun_dir, "best_params.json"), "w",
+                      encoding="utf-8") as f:
+                json.dump(rec, f, indent=1)
             keys = sorted({k for r in log for k in r})
-            with open(os.path.join(TUNE_DIR, ds, "search_log.csv"), "w",
+            with open(os.path.join(rerun_dir, "search_log.csv"), "w",
                       newline="", encoding="utf-8") as f:
                 w = csv.DictWriter(f, fieldnames=keys); w.writeheader()
                 w.writerows(log)
             print(f"  search: {start*100:.2f}% -> {best*100:.2f}% "
                   f"({used} fits, {(time.time()-t1)/60:.1f} min)")
+        else:
+            raise FileNotFoundError(f"Saved parameters not found: {bp_path}")
 
         acc, la, nmi, ln = evaluate(ds, X, y, c, params)
-        sym = symmetric_best(ds)
         print(f"  full evaluation: ACC {acc:.2f}% @l={la}, NMI {nmi:.2f}% @l={ln}")
-        if sym:
-            print(f"  symmetric-grid UDLA:     ACC {sym[0]:.2f}%, NMI {sym[1]:.2f}%"
-                  f"   -> {acc-sym[0]:+.2f} / {nmi-sym[1]:+.2f}")
-        summary.append((ds, acc, nmi, sym))
+        summary.append((ds, acc, nmi))
         print()
 
     print(f"{'='*68}\n  SUMMARY   (total {(time.time()-t0)/60:.1f} min)\n{'='*68}")
-    print(f"  {'dataset':14s}{'sym ACC':>9}{'wide ACC':>10}{'diff':>8}"
-          f"{'sym NMI':>10}{'wide NMI':>10}{'diff':>8}")
-    for ds, acc, nmi, sym in summary:
-        if sym:
-            print(f"  {ds:14s}{sym[0]:9.2f}{acc:10.2f}{acc-sym[0]:+8.2f}"
-                  f"{sym[1]:10.2f}{nmi:10.2f}{nmi-sym[1]:+8.2f}")
-        else:
-            print(f"  {ds:14s}{'--':>9}{acc:10.2f}{'':>8}{'--':>10}{nmi:10.2f}")
-    print(f"\n  [saved] {TUNE_DIR}/  and  {RES_DIR}/")
-    print("  AFAG and UDLA now share grid and procedure; compare them directly.\n")
+    print(f"  {'dataset':14s}{'ACC':>10}{'NMI':>10}")
+    for ds, acc, nmi in summary:
+        print(f"  {ds:14s}{acc:10.2f}{nmi:10.2f}")
+    if a.force:
+        print(f"\n  [new tuning records] {RERUN_TUNE_DIR}/")
+    print(f"  [evaluation results] {RES_DIR}/")
 
 
 if __name__ == "__main__":
