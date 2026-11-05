@@ -30,9 +30,9 @@ from algorithms_adaptive import SOGFS, CNAFS
 from data_loader import LOADERS
 
 try:
-    _runner = importlib.import_module("Runing_final")
+    _runner = importlib.import_module("Running")
 except ImportError:
-    sys.exit("[ERROR] Runing_final.py not found in this folder.")
+    sys.exit("[ERROR] Running.py not found in this folder.")
 
 PREPROCESS_MODE, DATASETS = _runner.PREPROCESS_MODE, _runner.DATASETS
 preprocess, SEED, DATA_ROOT = _runner.preprocess, _runner.SEED, _runner.DATA_ROOT
