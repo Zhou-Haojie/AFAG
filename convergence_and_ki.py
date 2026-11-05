@@ -10,9 +10,9 @@ from algorithms import EPS
 from data_loader import LOADERS
 
 try:
-    _runner = importlib.import_module("Runing_final")
+    _runner = importlib.import_module("Running")
 except ImportError:
-    sys.exit("[ERROR] Runing_final.py not found in this folder.")
+    sys.exit("[ERROR] Running.py not found in this folder.")
 FIXED, PREPROCESS_MODE = _runner.FIXED, _runner.PREPROCESS_MODE
 preprocess, SEED = _runner.preprocess, _runner.SEED
 DATA_ROOT, DATASETS = _runner.DATA_ROOT, _runner.DATASETS
