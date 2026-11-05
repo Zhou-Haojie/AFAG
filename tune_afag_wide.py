@@ -1,9 +1,5 @@
-"""Evaluate the saved AFAG parameters or repeat the recorded wide-grid search.
-
-The saved parameters and original search logs are read from tuning_afag_wide.
-With --force, the search starts from the (start) row in the saved log and
-writes new tuning records to tuning_afag_rerun. Evaluation outputs are saved
-to results_afag_rerun. The first-stage search is not reconstructed here.
+"""
+Evaluate the saved AFAG parameters or repeat the recorded wide-grid search.
 
 """
 from __future__ import annotations
